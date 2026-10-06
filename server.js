@@ -266,8 +266,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(PORT, () => {
-  const { provider, model, isAvailable } = getAIConfig();
-  console.log(`EduSpeak AI Server running on port ${PORT}`);
-  console.log(`AI Engine: ${isAvailable ? `Connected to ${provider} (${model})` : 'Mock AI Mode enabled'}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    const { provider, model, isAvailable } = getAIConfig();
+    console.log(`EduSpeak AI Server running on port ${PORT}`);
+    console.log(`AI Engine: ${isAvailable ? `Connected to ${provider} (${model})` : 'Mock AI Mode enabled'}`);
+  });
+}
+
+export default app;
