@@ -1,5 +1,5 @@
 -- ====================================================================
--- CƠ SỞ DỮ LIỆU EDUSPEAK AI - NỀN TẢNG HỌC TIẾNG ANH CHO HỌC SINH
+-- CƠ SỞ DỮ LIỆU CÁNH BUỒM TRI THỨC - NỀN TẢNG HỌC TIẾNG ANH CHO HỌC SINH
 -- PostgreSQL / Supabase Compatible Schema
 -- ====================================================================
 

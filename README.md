@@ -1,6 +1,6 @@
-# EduSpeak AI - Nền Tảng Học Tiếng Anh Thông Minh Cho Học Sinh
+# Cánh Buồm Tri Thức - Nền Tảng Học Tiếng Anh Thông Minh Cho Học Sinh
 
-EduSpeak AI là website học tiếng Anh hiện đại, tương tác cao, được thiết kế tối ưu cho học sinh trên cả máy tính (Desktop) và điện thoại di động (Mobile). Ứng dụng tích hợp công nghệ trí tuệ nhân tạo (AI) cùng công nghệ nhận diện giọng nói (Speech-to-Text) và phát âm bản xứ (Text-to-Speech), giúp học sinh rèn luyện toàn diện 4 kỹ năng: **Nghe, Nói, Đọc, Viết & Ngữ pháp**.
+Cánh Buồm Tri Thức là website học tiếng Anh hiện đại, tương tác cao, được thiết kế tối ưu cho học sinh trên cả máy tính (Desktop) và điện thoại di động (Mobile). Ứng dụng tích hợp công nghệ trí tuệ nhân tạo (AI) cùng công nghệ nhận diện giọng nói (Speech-to-Text) và phát âm bản xứ (Text-to-Speech), giúp học sinh rèn luyện toàn diện 4 kỹ năng: **Nghe, Nói, Đọc, Viết & Ngữ pháp**.
 
 ---
 

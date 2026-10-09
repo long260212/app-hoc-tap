@@ -11,12 +11,19 @@ import {
 } from '../types';
 import { StorageService } from './storageService';
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL !== undefined
-    ? import.meta.env.VITE_API_URL
-    : import.meta.env.DEV
-      ? 'http://localhost:3001'
-      : '';
+function getApiBaseUrl(): string {
+  if (typeof window !== 'undefined') {
+    // Nếu chạy trên HTTPS (như Vercel) hoặc production, tuyệt đối tránh gọi http://localhost:3001 gây lỗi Mixed Content
+    if (window.location.protocol === 'https:' || !import.meta.env.DEV) {
+      const customUrl = import.meta.env.VITE_API_URL;
+      if (customUrl && customUrl.startsWith('https://')) {
+        return customUrl;
+      }
+      return '';
+    }
+  }
+  return import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+}
 
 export class AIService {
   // 1. Phản hồi hội thoại Luyện nói & Đánh giá năng lực phát âm, ngữ pháp
@@ -32,14 +39,20 @@ export class AIService {
     // Thử gọi Backend nếu không bật chế độ mock thuần túy
     if (!user.useMockAI) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/chat-speaking`, {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
+        const response = await fetch(`${getApiBaseUrl()}/api/chat-speaking`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(params),
+          signal: controller.signal,
         });
+        clearTimeout(timeoutId);
         if (response.ok) {
           const data = await response.json();
-          return data;
+          if (data && data.aiReply && data.feedback) {
+            return data;
+          }
         }
       } catch (err) {
         console.warn('Backend API unreachable, switching to Smart Mock AI Mode:', err);
@@ -157,29 +170,36 @@ export class AIService {
 
     if (!user.useMockAI) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/generate-exercise`, {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
+        const response = await fetch(`${getApiBaseUrl()}/api/generate-exercise`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(params),
+          signal: controller.signal,
         });
+        clearTimeout(timeoutId);
         if (response.ok) {
           const data = await response.json();
-          const item: ExerciseItem = {
-            id: `ai-gen-${Date.now()}`,
-            title: data.title || `AI Generated: ${params.topic}`,
-            topicId: params.topic.toLowerCase().replace(/\s+/g, '-'),
-            topicTitle: params.topic,
-            level: params.level,
-            type: params.type,
-            passage: data.passage,
-            questions: data.questions,
-            isAiGenerated: true,
-          };
-          StorageService.addExercise(item);
-          return item;
+          const rawQuestions = Array.isArray(data?.questions) ? data.questions : (data?.exercise?.questions);
+          if (Array.isArray(rawQuestions) && rawQuestions.length > 0) {
+            const item: ExerciseItem = {
+              id: `ai-gen-${Date.now()}`,
+              title: data.title || `AI Generated: ${params.topic}`,
+              topicId: params.topic.toLowerCase().replace(/\s+/g, '-'),
+              topicTitle: params.topic,
+              level: params.level,
+              type: params.type,
+              passage: data.passage || `AI generated practice for ${params.topic}.`,
+              questions: rawQuestions,
+              isAiGenerated: true,
+            };
+            StorageService.addExercise(item);
+            return item;
+          }
         }
       } catch (err) {
-        console.warn('Backend generation failed, using intelligent client generator:', err);
+        console.warn('Backend generation failed or timed out, using intelligent client generator:', err);
       }
     }
 
@@ -497,7 +517,7 @@ export class AIService {
     // Trạng thái tài khoản mới chưa có bài làm nào
     if (!history || history.length === 0) {
       return {
-        overallAssessment: `Chào mừng ${user.fullName} đến với EduSpeak AI! Đây là tài khoản mới của em. Thầy là AI Learning Coach đồng hành. Hãy bắt đầu bài luyện nói hoặc làm bài tập đầu tiên để thầy có thể phân tích năng lực và đưa ra lộ trình chính xác nhất cho em nhé!`,
+        overallAssessment: `Chào mừng ${user.fullName} đến với Cánh Buồm Tri Thức! Đây là tài khoản mới của em. Thầy là AI Learning Coach đồng hành. Hãy bắt đầu bài luyện nói hoặc làm bài tập đầu tiên để thầy có thể phân tích năng lực và đưa ra lộ trình chính xác nhất cho em nhé!`,
         speakingFeedback: 'Chưa có dữ liệu bài nói. Em hãy chọn một chủ đề trong phần AI Speaking để thử sức nhé!',
         grammarFeedback: 'Chưa có dữ liệu bài tập ngữ pháp. Hãy vào "Kho bài tập" để rèn luyện nhé!',
         listeningFeedback: 'Chưa có dữ liệu luyện nghe. Em hãy thử nghe bài nghe đầu tiên trong mục "Luyện nghe" nhé!',

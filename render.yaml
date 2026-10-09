@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: eduspeak-ai
+    name: canh-buom-tri-thuc
     env: node
     plan: free
     buildCommand: npm install && npm run build
@@ -11,6 +11,6 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL
-        value: gemini-3.5-flash
+        value: gemini-3.8-flash
       - key: VITE_USE_MOCK_AI
         value: "false"

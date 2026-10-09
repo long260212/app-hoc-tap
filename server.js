@@ -22,7 +22,7 @@ function getAIConfig() {
   }
   if (isGemini) {
     const geminiModel = process.env.GEMINI_MODEL || 
-      (process.env.OPENAI_MODEL && !process.env.OPENAI_MODEL.startsWith('gpt-') ? process.env.OPENAI_MODEL : 'gemini-3.5-flash');
+      (process.env.OPENAI_MODEL && !process.env.OPENAI_MODEL.startsWith('gpt-') ? process.env.OPENAI_MODEL : 'gemini-3.8-flash');
     return {
       provider: 'Google Gemini',
       url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
@@ -49,9 +49,22 @@ async function callOpenAI(messages, responseFormat = null) {
   }
 
   try {
+    // Đảm bảo tương thích với endpoint OpenAI của Google Gemini:
+    // Cần ít nhất 1 tin nhắn 'user' trong messages để Gemini không báo lỗi 400 'contents is not specified'
+    const formattedMessages = messages.map((m) => ({ ...m }));
+    const hasUserMsg = formattedMessages.some((m) => m.role === 'user');
+    if (!hasUserMsg) {
+      const sys = formattedMessages.find((m) => m.role === 'system');
+      if (sys) {
+        formattedMessages.push({ role: 'user', content: sys.content });
+      } else {
+        formattedMessages.push({ role: 'user', content: 'Generate exercise content.' });
+      }
+    }
+
     const payload = {
       model,
-      messages,
+      messages: formattedMessages,
       temperature: 0.7,
     };
     if (responseFormat === 'json') {
@@ -212,13 +225,29 @@ Format as JSON:
   ]
 }`;
 
-  const aiResult = await callOpenAI([{ role: 'system', content: systemPrompt }], 'json');
+  const messages = [
+    { role: 'system', content: 'You are an expert English teacher generating educational exercises for Vietnamese students in strict JSON format.' },
+    { role: 'user', content: systemPrompt }
+  ];
+
+  const aiResult = await callOpenAI(messages, 'json');
 
   if (aiResult) {
     try {
       const parsed = JSON.parse(aiResult);
-      return res.json(parsed);
-    } catch {}
+      const rawQuestions = Array.isArray(parsed.questions) 
+        ? parsed.questions 
+        : (parsed.exercise && Array.isArray(parsed.exercise.questions) ? parsed.exercise.questions : null);
+      if (rawQuestions && rawQuestions.length > 0) {
+        return res.json({
+          title: parsed.title || `AI Generated: ${topic} (${level})`,
+          passage: parsed.passage || `Interactive practice on ${topic}.`,
+          questions: rawQuestions,
+        });
+      }
+    } catch (err) {
+      console.warn('Failed to parse AI generated exercise JSON:', err);
+    }
   }
 
   // MOCK FALLBACK CHO BÀI TẬP
@@ -269,7 +298,7 @@ app.use((req, res, next) => {
 if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     const { provider, model, isAvailable } = getAIConfig();
-    console.log(`EduSpeak AI Server running on port ${PORT}`);
+    console.log(`Cánh Buồm Tri Thức Server running on port ${PORT}`);
     console.log(`AI Engine: ${isAvailable ? `Connected to ${provider} (${model})` : 'Mock AI Mode enabled'}`);
   });
 }

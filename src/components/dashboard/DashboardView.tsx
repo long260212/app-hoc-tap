@@ -83,7 +83,7 @@ export const DashboardView: React.FC = () => {
               </>
             ) : (
               <>
-                Chào mừng bạn đến với <ShimmerText>EduSpeak AI</ShimmerText>! Tài khoản của bạn đã sẵn sàng. Hãy bắt đầu bài học đầu tiên để kích hoạt chuỗi học Streak và tích lũy điểm XP hôm nay.
+                Chào mừng bạn đến với <ShimmerText>Cánh Buồm Tri Thức</ShimmerText>! Tài khoản của bạn đã sẵn sàng. Hãy bắt đầu bài học đầu tiên để kích hoạt chuỗi học Streak và tích lũy điểm XP hôm nay.
               </>
             )}
           </motion.p>

@@ -4,6 +4,7 @@ import { Sparkles, X, Loader2 } from 'lucide-react';
 import { TOPICS_LIST } from '../../services/mockData';
 import { ProficiencyLevel, ExerciseType, ExerciseItem } from '../../types';
 import { AIService } from '../../services/aiService';
+import { useApp } from '../../context/AppContext';
 import { modalVariants, backdropVariants } from '../../utils/motion';
 
 interface ExerciseGeneratorModalProps {
@@ -17,6 +18,8 @@ export const ExerciseGeneratorModal: React.FC<ExerciseGeneratorModalProps> = ({
   onClose,
   onExerciseGenerated,
 }) => {
+  const { addCustomExercise, showToast } = useApp();
+
   const [topic, setTopic] = useState<string>(TOPICS_LIST[0].title);
   const [level, setLevel] = useState<ProficiencyLevel>('Intermediate');
   const [type, setType] = useState<ExerciseType>('multiple_choice');
@@ -48,10 +51,28 @@ export const ExerciseGeneratorModal: React.FC<ExerciseGeneratorModalProps> = ({
         count,
       });
       setIsLoading(false);
+      addCustomExercise(generated);
       onExerciseGenerated(generated);
+      showToast(`Đã tạo thành công đề bài mới bằng AI: "${generated.title}"!`, 'success');
       onClose();
-    } catch {
-      setIsLoading(false);
+    } catch (err) {
+      console.error('Error generating exercise:', err);
+      try {
+        const fallback = (AIService as any).createMockExerciseItem({
+          topic,
+          level,
+          type,
+          count,
+        });
+        addCustomExercise(fallback);
+        onExerciseGenerated(fallback);
+        showToast(`Đã tạo bài tập mới thành công!`, 'success');
+        onClose();
+      } catch {
+        showToast('Không thể tạo bài tập lúc này, vui lòng thử lại.', 'error');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 

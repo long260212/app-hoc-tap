@@ -21,13 +21,25 @@ export const DEMO_ACCOUNT: UserProfile = {
 };
 
 const STORAGE_KEYS = {
-  USER: 'eduspeak_user',
-  ACCOUNTS: 'eduspeak_accounts',
-  AUTH_SESSION: 'eduspeak_auth_session',
-  HISTORY: 'eduspeak_history',
-  DAILY_STATS: 'eduspeak_daily_stats',
-  EXERCISES: 'eduspeak_exercises',
+  USER: 'canhbuom_user',
+  ACCOUNTS: 'canhbuom_accounts',
+  AUTH_SESSION: 'canhbuom_auth_session',
+  HISTORY: 'canhbuom_history',
+  DAILY_STATS: 'canhbuom_daily_stats',
+  EXERCISES: 'canhbuom_exercises',
 };
+
+// Tự động đồng bộ dữ liệu từ khóa cũ nếu có
+if (typeof window !== 'undefined' && window.localStorage) {
+  try {
+    ['user', 'accounts', 'auth_session', 'history', 'daily_stats', 'exercises'].forEach((k) => {
+      const oldVal = localStorage.getItem(`eduspeak_${k}`);
+      if (oldVal && !localStorage.getItem(`canhbuom_${k}`)) {
+        localStorage.setItem(`canhbuom_${k}`, oldVal);
+      }
+    });
+  } catch {}
+}
 
 export class StorageService {
   // 1. Quản lý danh sách tài khoản

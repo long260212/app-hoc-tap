@@ -16,6 +16,7 @@ import {
   Award,
   ChevronRight,
   LogOut,
+  Sailboat,
 } from 'lucide-react';
 import { useApp, NavigationTab } from '../../context/AppContext';
 
@@ -65,14 +66,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {/* Brand Header */}
         <div className="p-5 border-b border-white/[0.06] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-cyan-400 flex items-center justify-center text-white shadow-glow-indigo">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-glow-indigo">
+              <Sailboat className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="font-extrabold text-base tracking-tight text-white flex items-center gap-1.5">
-                EduSpeak <span className="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold px-1.5 py-0.5 rounded-md">PRO AI</span>
+              <h1 className="font-extrabold text-sm tracking-tight text-white flex items-center gap-1.5">
+                Cánh Buồm <span className="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold px-1.5 py-0.5 rounded-md">TRI THỨC</span>
               </h1>
-              <p className="text-[11px] text-slate-400 font-medium">Desktop Learning App</p>
+              <p className="text-[11px] text-slate-400 font-medium">Học Tiếng Anh Thông Minh</p>
             </div>
           </div>
           <button

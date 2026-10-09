@@ -18,6 +18,7 @@ import {
   Zap,
   PlayCircle,
   Flame,
+  Sailboat,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ProficiencyLevel } from '../../types';
@@ -180,14 +181,14 @@ export const AuthScreen: React.FC = () => {
         >
           {/* Logo & Brand Badge */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-cyan-400 flex items-center justify-center text-white shadow-glow-indigo">
-              <Sparkles className="w-6 h-6 animate-pulse" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-glow-indigo">
+              <Sailboat className="w-6 h-6 animate-pulse" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-2xl font-black tracking-tight text-white">EduSpeak</span>
-                <span className="text-[11px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                  PRO AI
+                <span className="text-2xl font-black tracking-tight text-white">Cánh Buồm Tri Thức</span>
+                <span className="text-[11px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  AI EDUTECH
                 </span>
               </div>
               <p className="text-xs text-slate-400 font-medium">Nền tảng luyện tiếng Anh thông minh</p>

@@ -32,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     profile: { title: 'Hồ Sơ & Cài Đặt', subtitle: 'Tùy chỉnh mục tiêu cá nhân và cấu hình API' },
   };
 
-  const currentInfo = tabTitles[currentTab] || { title: 'EduSpeak AI', subtitle: 'Học tiếng Anh thông minh' };
+  const currentInfo = tabTitles[currentTab] || { title: 'Cánh Buồm Tri Thức', subtitle: 'Học tiếng Anh thông minh' };
 
   return (
     <header className="sticky top-0 z-30 bg-[#07090e]/80 backdrop-blur-xl border-b border-white/[0.06] px-4 lg:px-8 py-3.5 flex items-center justify-between">
